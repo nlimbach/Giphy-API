@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Giphy API</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+
+    <div id = "DisplayButtons">
+
+    </div>
+
+    <form id="submission-form">
+        <label for="NewButton">Add Button</label>
+        <input type="text" id="NewButton"><br>
+
+        <!-- Button triggers new movie to be added -->
+        <input id="add-Button" type="submit" value="Add Button">
+    </form>
+
+    <br><hr><br>
+
+    <div id = "DisplayGifs">
+
+    </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+  var topics = ["baseball","hockey","football","basketball","Pittsburgh Penguins","Stanley Cup", "Superbowl Champions","Sidney Crosby"];
+
+  renderButtons();
+
+  $("#add-Button").on("click", function() {
+
+          event.preventDefault();
+          // This line grabs the input from the textbox
+          var newTopic = $("#NewButton").val().trim();
+
+          // Adding movie from the textbox to our array
+          topics.push(newTopic);
+
+        $("#DisplayButtons").empty();
+          renderButtons();
+
+  });
+
+
+  function renderButtons ()
+  {
+      //Add button for each item in array
+      for (i = 0; i < topics.length; i++) {
+          var addButton = $("<button>");
+          var topicName = topics[i];
+          addButton.addClass("button btn-primary");
+          addButton.attr("id", topicName + "-button");
+          addButton.text(topicName);
+          $("#DisplayButtons").append(addButton);
+      }
+  }
+
+
+
+
+
+
+</script>
+</body>
+
+</html>
