@@ -34,39 +34,126 @@
 
   var topics = ["baseball","hockey","football","basketball","Pittsburgh Penguins","Stanley Cup", "Superbowl Champions","Sidney Crosby"];
 
-  renderButtons();
+  initializeButtons();
 
   $("#add-Button").on("click", function() {
 
           event.preventDefault();
-          // This line grabs the input from the textbox
-          var newTopic = $("#NewButton").val().trim();
 
-          // Adding movie from the textbox to our array
+          var newTopic = $("#NewButton").val().trim();
           topics.push(newTopic);
 
-        $("#DisplayButtons").empty();
-          renderButtons();
+
+          console.log(topics);
+
+          renderButtons(newTopic);
+
 
   });
 
 
-  function renderButtons ()
-  {
-      //Add button for each item in array
-      for (i = 0; i < topics.length; i++) {
+  function initializeButtons () {
+      for (i = 0; i < 8; i++) {
           var addButton = $("<button>");
           var topicName = topics[i];
           addButton.addClass("button btn-primary");
-          addButton.attr("id", topicName + "-button");
+          addButton.attr("topic-Name", topicName);
           addButton.text(topicName);
           $("#DisplayButtons").append(addButton);
+
       }
+
+      ClickButton();
+
+  }
+
+  function renderButtons (newTopic)
+  {
+      //Add button for each item in array
+
+          var addButton = $("<button>");
+          var topicName = newTopic;
+          addButton.addClass("button btn-primary");
+          addButton.attr("topic-Name", topicName);
+          addButton.text(topicName);
+          $("#DisplayButtons").append(addButton);
+
+          ClickButton();
+
+
+
+
+
   }
 
 
 
+function ClickButton() {
+    $("button").on("click", function () {
+        event.preventDefault();
 
+        // In this case, the "this" keyword refers to the button that was clicked
+        var thisTopic = $(this).attr("topic-Name");
+        console.log(thisTopic);
+        // Constructing a URL to search Giphy for the name of the person who said the quote
+        var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + thisTopic + "&api_key=dc6zaTOxFJmzC&limit=10";
+
+        console.log(queryURL);
+
+
+        $.ajax({
+            url: queryURL,
+            method: "GET"
+        })
+
+        // After the data from the AJAX request comes back
+            .done(function (response) {
+
+                var results = response.data;
+                console.log(results);
+                for (i = 0; i < 10; i++) {
+                    // Creating and storing an image tag
+                    var image = $("<img>");
+
+                    var animate = results[i].images.fixed_height.url;
+                    var still = results[i].images.fixed_height_still.url;
+
+                    image.attr("src", animate);
+                    image.addClass("gif");
+                    image.attr("alt", "topic-image");
+                    image.attr("data-still", still);
+                    image.attr("data-animate", animate);
+                    image.attr("current", "animate");
+
+
+                    $("#DisplayGifs").prepend(image);
+                    $("#DisplayGifs").prepend("</br>");
+
+
+
+                    $(".gif").on("click", function() {
+                        // The attr jQuery method allows us to get or set the value of any attribute on our HTML element
+                        console.log("GIF CLICKED");
+                        var state = $(this).attr("current");
+                        // If the clicked image's state is still, update its src attribute to what its data-animate value is.
+                        // Then, set the image's data-state to animate
+                        // Else set src to the data-still value
+                        if (state === "animate") {
+                            $(this).attr("src", $(this).attr("data-still"));
+                            $(this).attr("current", "still");
+                        } else {
+                            $(this).attr("src", $(this).attr("data-animate"));
+                            $(this).attr("current", "animate");
+                        }
+                    });
+
+
+                }
+            })
+
+
+    })
+}
 
 
 </script>
